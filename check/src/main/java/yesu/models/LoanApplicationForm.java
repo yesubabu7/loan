@@ -1,23 +1,21 @@
-package yesu.models;
-
-import java.util.Date;
+package yesu.models; // Replace with the actual package name
 
 public class LoanApplicationForm {
 	private String firstname;
 	private String lastname;
-	private Date dob;
+	private String dob;
 	private String pan;
-	private Integer  mobile;
+	private String mobile;
 	private String address;
-	private String numericinput;
-	private String name;
-	private String loantype;
-	private String loanamount;
-	private String nomineename;
-	private String nomineerelation;
-	
+	private String numericInput;
+	private String guardianName;
+	private String loanType;
+	private String loanAmount;
+	private String nomineeName;
+	private String nomineeRelation;
 
-	// Getters and setters for each field
+	// Getter and Setter methods for each field
+
 	public String getFirstname() {
 		return firstname;
 	}
@@ -34,11 +32,11 @@ public class LoanApplicationForm {
 		this.lastname = lastname;
 	}
 
-	public Date getDob() {
+	public String getDob() {
 		return dob;
 	}
 
-	public void setDob(Date dob) {
+	public void setDob(String dob) {
 		this.dob = dob;
 	}
 
@@ -50,11 +48,11 @@ public class LoanApplicationForm {
 		this.pan = pan;
 	}
 
-	public Integer getMobile() {
+	public String getMobile() {
 		return mobile;
 	}
 
-	public void setMobile(Integer mobile) {
+	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
 
@@ -67,52 +65,50 @@ public class LoanApplicationForm {
 	}
 
 	public String getNumericInput() {
-		return numericinput;
+		return numericInput;
 	}
 
 	public void setNumericInput(String numericInput) {
-		this.numericinput = numericInput;
+		this.numericInput = numericInput;
 	}
 
-	public String getName() {
-		return name;
+	public String getGuardianName() {
+		return guardianName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setGuardianName(String guardianName) {
+		this.guardianName = guardianName;
 	}
 
 	public String getLoanType() {
-		return loantype;
+		return loanType;
 	}
 
 	public void setLoanType(String loanType) {
-		this.loantype = loanType;
+		this.loanType = loanType;
 	}
 
 	public String getLoanAmount() {
-		return loanamount;
+		return loanAmount;
 	}
 
 	public void setLoanAmount(String loanAmount) {
-		this.loanamount = loanAmount;
+		this.loanAmount = loanAmount;
 	}
 
-	public String getNomineename() {
-		return nomineename;
+	public String getNomineeName() {
+		return nomineeName;
 	}
 
-	public void setNomineename(String nomineename) {
-		this.nomineename = nomineename;
+	public void setNomineeName(String nomineeName) {
+		this.nomineeName = nomineeName;
 	}
 
-	public String getNomineerelation() {
-		return nomineerelation;
+	public String getNomineeRelation() {
+		return nomineeRelation;
 	}
 
-	public void setNomineerelation(String nomineerelation) {
-		this.nomineerelation = nomineerelation;
+	public void setNomineeRelation(String nomineeRelation) {
+		this.nomineeRelation = nomineeRelation;
 	}
-
-	
 }
