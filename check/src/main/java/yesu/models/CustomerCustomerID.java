@@ -1,51 +1,34 @@
 package yesu.models;
-import java.io.Serializable;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
-@Table(name = "eee")
-public class CustomerCustomerID  implements Serializable {
-	
-	
+@Table(name = "yesuCustomerCustomerIDTable")
+public class CustomerCustomerID {
+
 	@Id
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    private CustomerUser customerUser;
-
-    public void setCustomerCustomId(long customerCustomId) {
-		this.customerCustomId = customerCustomId;
-	}
-
 	@Column(name = "customer_custom_id")
-    private long customerCustomId;
-	
-	 @Column(name = "user_id", insertable = false, updatable = false)
-	    private int userId;
+	private long customerCustomId; // Primary key
 
-	
-	
-	
-	 public void setUserId(int userId) {
-		 this .userId=userId;
-	        
-	    }
-
-    public CustomerUser getCustomerUser() {
-		return customerUser;
-	}
-
-	public void setCustomerUser(CustomerUser customerUser) {
-		this.customerUser = customerUser;
-	}
+	@Column(name = "user_id")
+	private int userId;
 
 	public long getCustomerCustomId() {
 		return customerCustomId;
 	}
 
-	
+	public void setCustomerCustomId(long customerCustomId) {
+		this.customerCustomId = customerCustomId;
+	}
 
-	
+	public int getUserId() {
+		return userId;
+	}
 
-    
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
 }

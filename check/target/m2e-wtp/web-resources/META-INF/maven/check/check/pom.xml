@@ -60,6 +60,18 @@
 			<version>42.5.0</version>
 		</dependency>
 		<!-- IN MEMORY Database and JDBC Driver -->
+		
+		<dependency>
+    <groupId>org.apache.poi</groupId>
+    <artifactId>poi</artifactId>
+    <version>5.1.0</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.poi</groupId>
+    <artifactId>poi-ooxml</artifactId>
+    <version>5.1.0</version>
+</dependency>
+
 		<dependency>
 			<groupId>hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>

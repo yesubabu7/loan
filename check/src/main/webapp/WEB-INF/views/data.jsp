@@ -30,6 +30,9 @@
             <input type="text" id="amountFilter" class="form-control" placeholder="Enter Loan Amount" onkeyup="filterAmount()">
         </div>
         
+        <div class="mt-3">
+        	<a id="downloadExcel" href="downloadExcel">Download as Excel</a>	
+        </div>
         
 
         <h5 class="mt-5">Loan Applicants</h5>
@@ -39,7 +42,7 @@
                     <th>Applicant ID</th>
                     <th>Amount</th>
                     <th>EMI Range</th>
-                    <th>no Of MOnths</th>
+                  
                     <th>Action</th>
                 </tr>
             </thead>
@@ -49,7 +52,7 @@
                         <td>${loanApplicant.id}</td>
                         <td>${loanApplicant.amount}</td>
                         <td>${loanApplicant.emiRangeFrom} - ${loanApplicant.emiRangeTo}</td>
-                        <td>${loanApplicant.nominatedAmount}</td>
+                    
                         <td>
                             <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#details-${loanApplicant.id}">
                                 View Details
@@ -71,8 +74,6 @@
                                 <input type="hidden" name="customerId" value="${loanApplicant.customerId}">
                                 <button type="submit" name="action" value="Accept" class="btn btn-success">Accept</button>
                                 <button type="submit" name="action" value="Reject" class="btn btn-danger">Reject</button>
-                            	<button id="downloadExcel" class="btn btn-primary">Download as Excel</button>
-                            	
                             </form>
                             
                         </td>

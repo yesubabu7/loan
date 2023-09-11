@@ -7,10 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-
-
 @Entity
-@Table(name = "cc")
+@Table(name = "yesuNomineeTable")
 public class Nominee {
 
 	@Id

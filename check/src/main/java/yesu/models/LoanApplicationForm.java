@@ -1,6 +1,5 @@
 package yesu.models;
 
-import java.util.Date;
 public class LoanApplicationForm {
 	private String firstname;
 	private String lastname;

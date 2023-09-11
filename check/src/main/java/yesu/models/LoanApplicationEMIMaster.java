@@ -1,15 +1,20 @@
 package yesu.models;
+
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.math.BigDecimal;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "yesuLoanApplicationEMIMaster")
+
 public class LoanApplicationEMIMaster {
 
-    public int getInapId() {
+	public int getInapId() {
 		return inapId;
 	}
 
@@ -50,21 +55,21 @@ public class LoanApplicationEMIMaster {
 	}
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Inap_id")
-    private int inapId;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "Inap_id")
+	private int inapId;
 
-    @Column(name = "lemi_roi")
-    private BigDecimal lemiRoi;
+	@Column(name = "lemi_roi")
+	private BigDecimal lemiRoi;
 
-    @Column(name = "lemi_noe")
-    private short lemiNoe;
+	@Column(name = "lemi_noe")
+	private short lemiNoe;
 
-    @Column(name = "lemi_sanctioned_amount")
-    private BigDecimal lemiSanctionedAmount;
+	@Column(name = "lemi_sanctioned_amount")
+	private BigDecimal lemiSanctionedAmount;
 
-    @Column(name = "lemi_repayamount")
-    private BigDecimal lemiRepayAmount;
+	@Column(name = "lemi_repayamount")
+	private BigDecimal lemiRepayAmount;
 
-    // Constructors, getters, and setters
+	// Constructors, getters, and setters
 }

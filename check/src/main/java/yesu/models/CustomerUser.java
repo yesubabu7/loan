@@ -1,45 +1,50 @@
 package yesu.models;
-import javax.persistence.*;
+
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 @Entity
-@Table(name = "ddd")
+@Table(name = "yesuCustomerUserTable")
 public class CustomerUser {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private int userId;
+	@Id
+	@Column(name = "user_id")
+	private int userId; // Primary key
 
-    
 	@Column(name = "user_name")
-    private String userName;
+	private String userName;
 
-    @Column(name = "user_cdate")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date userCreationDate;
+	@Column(name = "user_cdate")
 
-    @Column(name = "user_type")
-    private String userType;
+	private Date userCreationDate;
 
-    @Column(name = "user_pwd")
-    private String userPassword;
+	@Column(name = "user_type")
+	private String userType;
 
-    @Column(name = "user_email")
-    private String userEmail;
+	@Column(name = "user_pwd")
+	private String userPassword;
 
-    @Column(name = "r_recoveryemail")
-    private String recoveryEmail;
+	@Column(name = "user_email")
+	private String userEmail;
 
-    @Column(name = "user_mobile")
-    private long userMobile;
-    
-    public int getUserId() {
+	@Column(name = "r_recoveryemail")
+	private String recoveryEmail;
+
+	@Column(name = "user_mobile")
+	private long userMobile;
+
+	// Constructors, getters, and setters
+
+	public int getUserId() {
 		return userId;
 	}
 
-	public void setUserId(int userId) {
-		this.userId = userId;
+	public void setUserId(int customerId) {
+		this.userId = customerId;
 	}
 
 	public String getUserName() {
@@ -55,7 +60,7 @@ public class CustomerUser {
 	}
 
 	public void setUserCreationDate(Date userCreationDate) {
-		this.userCreationDate = userCreationDate;
+		this.userCreationDate = new Date();
 	}
 
 	public String getUserType() {
@@ -97,7 +102,4 @@ public class CustomerUser {
 	public void setUserMobile(long userMobile) {
 		this.userMobile = userMobile;
 	}
-
-
-    
 }
