@@ -1,5 +1,10 @@
 package com.example.insurence.controllers;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,9 +25,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.example.insurence.models.Claim;
+import com.example.insurence.models.ClaimApplication;
 import com.example.insurence.models.CustomerData;
 import com.example.insurence.models.FamilyMedicalHistoryData;
+import com.example.insurence.models.LoginClass;
 import com.example.insurence.models.UserData;
 import com.example.insurence.repositories.InsurenceRepository;
 
@@ -74,8 +84,6 @@ public class InsurenceController {
 
 	@PostMapping("/saveFamilyMedicalHistory")
 	public String saveFamilyMedicalHistory(@RequestBody FamilyMedicalHistoryData data) {
-		long userId = (long) session.getAttribute("userId");
-		data.setUserid(userId);
 
 		insurenceRepository.saveFamilyMedicalHistory(data);
 		return "succesfuly saved";
@@ -95,15 +103,6 @@ public class InsurenceController {
 	@RequestMapping(value = "/UpdateCustomers", method = RequestMethod.POST)
 
 	public String UpdateCustomers(@RequestBody List<CustomerData> updatedCustomerData) {
-
-		for (CustomerData customerData : updatedCustomerData) {
-			customerData.setCust_status("Active");
-			customerData.setCust_luudate(new Date());
-			customerData.setCust_luuser(1);
-
-			// Set a default value for cust_cdate (assuming it's a Date field)
-			customerData.setCust_cdate(new Date());
-		}
 
 		String check = insurenceRepository.updateCustomersData(updatedCustomerData);
 
@@ -218,7 +217,7 @@ public class InsurenceController {
 	public String validateOTP(@RequestParam("otp") String otp, Model model) {
 		model.addAttribute("to", "");
 		int OTP = Integer.parseInt(otp);
-
+		ModelAndView mav = new ModelAndView();
 		int originalOtp = (Integer) session.getAttribute("OTP");
 		String email = (String) session.getAttribute("email");
 
@@ -227,7 +226,8 @@ public class InsurenceController {
 		// checking the otp sent by the user if true returning reset page else need to stay in the same page with error
 		// msg
 		if (originalOtp == OTP && comp > 0) {
-
+			mav.setViewName("reset");
+			mav.addObject("email", email);
 			return "otp Match";
 		}
 		if (comp < 0)
@@ -241,12 +241,62 @@ public class InsurenceController {
 	public String reset(Model model, @RequestParam("email") String email, @RequestParam("pwd") String pwd,
 			@RequestParam("cnfpwd") String cnfpwd) {
 		System.out.println(email + " " + pwd + " " + cnfpwd);
-		int x = insurenceRepository.resetpwd(email, pwd, cnfpwd);
-		if (x > 0)
-			return "password Changed";
+		int x = insurenceRepository.resetpwd(email, pwd);
+		if (x == 1)
+			model.addAttribute("message", "password changed");
 		else
-			return "pasword not match";
-
+			model.addAttribute("message", "error while password changing");
+		model.addAttribute("login", new LoginClass());
+		return "password Changed";
 	}
+	
+	
+	
+	@RequestMapping(value = "/claimbills", method = RequestMethod.POST)
+	public String claimData(@RequestParam("file[]") MultipartFile[] files,@RequestParam("claimAmount[]") int[] amount, Claim claim, ClaimApplication application,
+			Model model) {
+
+		insurenceRepository.addClaimApplication(application);
+		insurenceRepository.addClaim(claim.getClamIplcId(),application.getClaimAmountRequested());
+		Claim clm_id = insurenceRepository.getClaimByid(claim.getClamIplcId());
+		int cid = clm_id.getClamId();
+		String uploadDir = "src/main/resources/static/file";
+		int i=0;
+		try {
+			// Create the target directory if it doesn't exist
+			Files.createDirectories(Paths.get(uploadDir));
+
+			for (MultipartFile file : files) {
+				// Get the original file name
+				String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+
+				// Create the target file path within the directory
+				Path targetLocation = Paths.get(uploadDir).resolve(fileName);
+
+				// Copy the file to the target location
+				Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+
+				String fn="file/"+file.getOriginalFilename();
+				
+				
+				System.out.println("original file name..."+file.getOriginalFilename());
+				System.out.println("file path..."+fn);
+				
+
+				insurenceRepository.addClaimBills(file.getOriginalFilename(), fn, cid,amount[i]);
+				i++;
+
+			}
+
+			// After successfully storing all files, you can redirect to a success page or return a response accordingly
+			return "SETCLAIMS";
+		} catch (IOException ex) {
+			ex.printStackTrace();
+
+		}
+
+		return "SETCLAIMS";
+	}
+
 
 }

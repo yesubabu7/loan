@@ -22,6 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.insurence.contracts.RepositoryInterface;
 import com.example.insurence.daos.InsurenceDao;
 import com.example.insurence.models.AuthUtils;
+import com.example.insurence.models.Claim;
+import com.example.insurence.models.ClaimApplication;
 import com.example.insurence.models.CustomerData;
 import com.example.insurence.models.FamilyMedicalHistoryData;
 import com.example.insurence.models.UserData;
@@ -96,15 +98,41 @@ public class InsurenceRepository implements RepositoryInterface {
 	}
 
 	private static void sendEmail(String to, String subject, String body) {
-		String host = "smtp.gmail.com";
-		int port = 587;
+		
 		String username = "avengersbtrs@gmail.com";
 		String password = "urpr twig ffeb uqlx";
+		
+		
+		String host = "smtp.gmail.com";
+		int port = 587;
+		
+		/*When you specify the SMTP server's address (hostname) as "smtp.gmail.com",
+		 *  you are essentially telling your code to connect to Gmail's SMTP server for sending
+		 *   emails. This is the server that will handle the transmission of your email message 
+		 *   to its destination, and it's the location to which you send your email data for
+		 *    processing and delivery.
+		 */
+		
 
 		// Set properties
 		Properties props = new Properties();
 		props.put("mail.smtp.auth", "true");
+		
+		
+		/*
+		 * Purpose: Enabling SMTP authentication is essential for ensuring that only authorized users 
+		 * can send 
+		 *emails through the SMTP server. It helps prevent unauthorized access and misuse of the
+		 * SMTP server.
+		 */
 		props.put("mail.smtp.starttls.enable", "true");
+		
+		/*
+		 * Purpose: Enabling STARTTLS is crucial for secure email transmission. It ensures that the email 
+		 * communication between your client and the SMTP server is encrypted, making 
+		 * it more resistant to interception or eavesdropping.
+		 */
+		
 		props.put("mail.smtp.host", host);
 		props.put("mail.smtp.port", port);
 
@@ -136,13 +164,8 @@ public class InsurenceRepository implements RepositoryInterface {
 		return randomNumber;
 	}
 
-	public int resetpwd(String email, String pwd, String cnfpwd) {
-		if (pwd.equals(cnfpwd))
-			return insurenceDao.resetpwd(email, pwd);
-
-		else
-			return 0;
-
+	public int resetpwd(String email, String pwd) {
+		return insurenceDao.resetpwd(email, pwd);
 	}
 
 	public boolean userChecking(String userName, String password, List<UserData> userDataList) {
@@ -159,13 +182,12 @@ public class InsurenceRepository implements RepositoryInterface {
 				String key = AuthUtils.generateKey();
 				session.setAttribute("key", key);
 
-				Long userId = (Long) session.getAttribute("userId");
-
-				System.out.println(userId + "userId Curent from sesion");
+				Long userId = userData.getUserId();
 
 				UserLoginValidation user = insurenceDao.getLoginTimeRange(userId);
 
 				Date currentDate = new Date();
+				System.out.println("checked key");
 
 				// Check if the current date and time falls within the login time range
 				// Format the current date to match the login date format
@@ -209,6 +231,26 @@ public class InsurenceRepository implements RepositoryInterface {
 		insurenceDao.updateFamilyMedicalHistory(updatedFamilyMedicalHistoryData);
 
 		return "updated succesfully";
+	}
+
+	public Claim getClaimByid(int clamIplcId) {
+		
+		return insurenceDao.getClaimByid(clamIplcId);
+	}
+
+	public void addClaimBills(String originalFilename, String fn, int cid, int i) {
+		insurenceDao.addClaimBills(originalFilename,fn,cid,i);
+		
+	}
+
+	public void addClaimApplication(ClaimApplication application) {
+		insurenceDao.addClaimApplication(application);
+		
+	}
+
+	public void addClaim(int clamIplcId, double claimAmountRequested) {
+		insurenceDao.addClaim(clamIplcId,claimAmountRequested);
+		
 	}
 
 }

@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +20,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.insurence.contracts.DaoInterface;
+import com.example.insurence.models.Claim;
+import com.example.insurence.models.ClaimApplication;
 import com.example.insurence.models.CustomerData;
 import com.example.insurence.models.FamilyMedicalHistoryData;
 import com.example.insurence.models.UserData;
@@ -27,6 +30,8 @@ import com.example.insurence.rowmappers.CustomerDataRowMapper;
 import com.example.insurence.rowmappers.FamilyMedicalHistoryDataRowMapper;
 import com.example.insurence.rowmappers.UserLoginValidationRowMapper;
 import com.example.insurence.rowmappers.UsersDataRowMapper;
+import com.example.insurence.rowmappers.ClaimMapper;
+
 
 import jakarta.servlet.http.HttpSession;
 
@@ -36,6 +41,13 @@ public class InsurenceDao implements DaoInterface {
 
 	JdbcTemplate jdbcTemplate;
 	HttpSession session;
+	
+	private String SQL_GET_CLAIMS = "select * from  _Claims";
+	private String SQL_GET_FILTERED_CLAIMS = "select * from  _Claims where clam_status=?";
+	private String SQL_GET_CLAIM_BY_ID = "select * from  _Claims where clam_id=?";
+	private String SQL_INSERT_CLAIM = "insert into _Claims(clam_source,clam_type,clam_date,clam_amount_requested,clam_iplc_id) values(?,?,?,?,?)";
+	private String SQL_INSERT_CLAIMBill = "insert into Claim_bills(clam_id,clbl_document_title,clbl_document_path,clbl_claim_amount) values(?,?,?,?)";
+
 
 	@Autowired
 	public InsurenceDao(DataSource datasource, HttpSession session) {
@@ -154,7 +166,7 @@ public class InsurenceDao implements DaoInterface {
 	}
 
 	public int resetpwd(String email, String pwd) {
-		// int userId1 = (int) session.getAttribute("userId");
+		int userId1 = (int) session.getAttribute("userId");
 
 		String sql = "UPDATE updatePasswordTable SET username = ?, password = ? WHERE userId = ?";
 		return jdbcTemplate.update(sql, email, pwd, 1);
@@ -200,4 +212,41 @@ public class InsurenceDao implements DaoInterface {
 		return jdbcTemplate.queryForObject(sql, new Object[] { userId }, new UserLoginValidationRowMapper());
 	}
 
+	public Claim getClaimByid(int clamIplcId) {
+		return jdbcTemplate.queryForObject(SQL_GET_CLAIM_BY_ID, new Object[] { clamIplcId }, new ClaimMapper());
+	}
+
+	public void addClaimBills(String originalFilename, String filePath, int cid, int i) {
+		System.out.println("brooo");
+		jdbcTemplate.update(SQL_INSERT_CLAIMBill,  originalFilename,filePath,i);
+		
+	}
+
+	public void addClaimApplication(ClaimApplication application) {
+		System.out.println(application.getMemberIndex() + 1);
+		String query = "insert into insurance_claim(policy_id,member_index,relation,joined_date,patient_name,date_of_birth,gender,contact_number,address,disease,diagnosis,treatment,claimAmount) values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		Object[] values = { application.getClamIplcId(), application.getMemberIndex(), application.getRelation(),
+				application.getJoinedDate(), application.getPatientName(), application.getDateOfBirth(),
+				application.getGender(), application.getContactNumber(), application.getAddress(),
+				application.getDisease(), application.getDiagnosis(), application.getTreatment(),
+				application.getClaimAmountRequested() };
+		jdbcTemplate.update(query, values);
+		
+	}
+
+	public void addClaim(int clamIplcId, double claimAmountRequested) {
+		 LocalDate currentDate = LocalDate.now();
+		    java.sql.Date sqlDate = java.sql.Date.valueOf(currentDate);
+		    
+		
+		
+			jdbcTemplate.update(SQL_INSERT_CLAIM, "HSPT", "DRCT", sqlDate,claimAmountRequested, clamIplcId);
+
+		
+	}
+
 }
+
+
+
+
