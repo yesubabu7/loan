@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Data</title>
+</head>
+<body>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Date of Birth</th>
+                <th>Address</th>
+                <th>Gender</th>
+                <th>Creation Date</th>
+                <th>Aadhar Number</th>
+            </tr>
+        </thead>
+        <tbody id="customerTableBody">
+            <!-- Customer data will be displayed here -->
+        </tbody>
+    </table>
+
+    <button type="button" id="editButton">Edit All</button>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var editMode = false; // Initially not in edit mode
+
+            // Function to fetch and display customer data
+            function fetchAndDisplayCustomerData() {
+                // Replace with your API endpoint to fetch customer data
+                var apiEndpoint = "/Customers";
+
+                $.ajax({
+                    url: apiEndpoint,
+                    method: "GET",
+                    dataType: "json",
+                    success: function (customerDataList) {
+                        // Clear the existing table data
+                        $("#customerTableBody").empty();
+
+                        // Iterate through the list of customer data and append rows to the table
+                        $.each(customerDataList, function (index, customerData) {
+                            var newRow = "<tr>" +
+                                "<td>" + customerData.cust_id + "</td>" +
+                                "<td><input type='text' class='edit-field' name='cust_fname' value='" + customerData.cust_fname + "'></td>" +
+                                "<td><input type='text' class='edit-field' name='cust_lname' value='" + customerData.cust_lname + "'></td>" +
+                                "<td><input type='date' class='edit-field' name='cust_dob' value='" + customerData.cust_dob + "'></td>" +
+                                "<td><input type='text' class='edit-field' name='cust_address' value='" + customerData.cust_address + "'></td>" +
+                                "<td><input type='text' class='edit-field' name='cust_gender' value='" + customerData.cust_gender + "'></td>" +
+                                "<td><input type='date' class='edit-field' name='cust_cdate' value='" + customerData.cust_cdate + "'></td>" +
+                                "<td><input type='number' class='edit-field' name='cust_aadhar' value='" + customerData.cust_aadhar + "'></td>" +
+                                "</tr>";
+
+                            $("#customerTableBody").append(newRow);
+                        });
+
+                        // Add click event for the "Edit" button
+                        $("#editButton").click(function () {
+                            if (editMode) {
+                                // Save data when exiting edit mode
+                                saveCustomerData();
+                            } else {
+                                // Enter edit mode
+                                enterEditMode();
+                            }
+                        });
+                    },
+                    error: function (error) {
+                        console.error("Error fetching customer data:", error);
+                    }
+                });
+            }
+
+            // Function to enter edit mode
+            function enterEditMode() {
+                editMode = true;
+                $(".edit-field").prop("disabled", false);
+                $("#editButton").text("Save All");
+            }
+
+         // Function to save customer data
+            function saveCustomerData() {
+                // Create an array to hold the customer data objects
+                var customerDataArray = [];
+
+                // Iterate through the rows in the table
+                $("#customerTableBody tr").each(function () {
+                    var customerData = {
+                        cust_id: $(this).find("td:eq(0)").text(),
+                        cust_fname: $(this).find("input[name='cust_fname']").val(),
+                        cust_lname: $(this).find("input[name='cust_lname']").val(),
+                        cust_dob: $(this).find("input[name='cust_dob']").val(),
+                        cust_address: $(this).find("input[name='cust_address']").val(),
+                        cust_gender: $(this).find("input[name='cust_gender']").val(),
+                        cust_cdate: $(this).find("input[name='cust_cdate']").val(),
+                        cust_aadhar: $(this).find("input[name='cust_aadhar']").val()
+                    };
+
+                    customerDataArray.push(customerData);
+                });
+
+                // Send AJAX POST request with the array of customer data
+                $.ajax({
+                    url: "/UpdateCustomers",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(customerDataArray), // Serialize the array
+                    success: function (response) {
+                        console.log("Customer data updated successfully:", response);
+                        exitEditMode();
+                        fetchAndDisplayCustomerData(); // Refresh the data after saving
+                    },
+                    error: function (error) {
+                        console.error("Error updating customer data:", error);
+                        // Handle error, e.g., display an error message
+                    }
+                });
+            }
+
+            // Function to exit edit mode
+            function exitEditMode() {
+                editMode = false;
+                $(".edit-field").prop("disabled", true);
+                $("#editButton").text("Edit All");
+            }
+
+            // Load and display customer data when the page loads
+            fetchAndDisplayCustomerData();
+        });
+    </script>
+</body>
+</html>
